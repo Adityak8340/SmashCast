@@ -1,0 +1,9 @@
+jobs:
+  my_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: My Step
+        env:
+          MY_API: ${{ secrets.MY_API }}
+        run: |
+          # Your commands here
