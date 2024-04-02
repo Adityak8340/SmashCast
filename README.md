@@ -1,3 +1,7 @@
+## Sample
+
+![image](https://github.com/Adityak8340/SmashCast/assets/140245948/29d27030-4706-494b-b479-810048947591)
+
 # SmashCast - Weather-Driven Badminton Play Predictor
 
 SmashCast is a Streamlit web application that predicts whether it's suitable to play badminton based on real-time weather data. It uses Naive Bayes model to make predictions and fetches weather information from the OpenWeatherMap API.
