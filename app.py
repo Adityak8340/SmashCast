@@ -76,7 +76,8 @@ def get_weather_data(city):
         return None, None, None, None
 
 # Streamlit app layout
-st.title('Weather-Driven Badminton Play Predictor')
+st.title('SmashCast')
+st.text('Weather-Driven Badminton Play Predictor')
 
 st.image('badmin_img.png')
 
