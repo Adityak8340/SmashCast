@@ -81,24 +81,6 @@ st.text('Weather-Driven Badminton Play Predictor')
 
 st.image('badmin_img.png')
 
-# User input fields for custom prediction
-temperature_custom = st.slider('Temperature (°C)', min_value=-20.0, max_value=40.0, value=20.0, step=1.0)
-humidity_custom = st.slider('Humidity (%)', min_value=0, max_value=100, value=50, step=1)
-wind_speed_custom = st.slider('Wind Speed (m/s)', min_value=0.0, max_value=30.0, value=10.0, step=0.1)
-weather_description_custom = st.selectbox('Weather Description', ['Rain', 'Sunny', 'Overcast'])
-
-# Button for custom prediction
-if st.button('Custom Prediction'):
-    # Classify weather parameters for custom prediction
-    classification_result_custom = classify_weather(weather_description_custom, temperature_custom, humidity_custom, wind_speed_custom)
-    current_weather_custom = pd.DataFrame(classification_result_custom)
-    
-    # Make prediction based on custom weather parameters
-    prediction_custom = predict(current_weather_custom)
-    st.write(f'Custom Prediction: {"Yes, you can play Badminton" if prediction_custom[0] == 1 else "No, you cannot play Badminton"}')
-    if prediction_custom[0] == 1:
-        st.balloons()
-
 # Text input for location for real-time prediction
 location = st.selectbox('Enter your city name', ['Lucknow', 'Kanpur', 'Goa', 'Jaipur', 'Kottayam', 'Mathura','Kolkata'])
 # User input fields for custom date and time
