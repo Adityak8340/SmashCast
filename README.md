@@ -43,6 +43,8 @@ Upon launching the app, users are presented with options to get predictions: cus
 - NumPy
 - Pandas
 - Requests
+- scikit-learn (or sklearn)
+
 
 ## Contributing
 
