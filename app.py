@@ -82,7 +82,7 @@ st.text('Weather-Driven Badminton Play Predictor')
 st.image('badmin_img.png')
 
 # Text input for location for real-time prediction
-location = st.selectbox('Enter your city name', ['Lucknow', 'Kanpur', 'Goa', 'Jaipur', 'Kottayam', 'Mathura','Kolkata'])
+location = st.selectbox('Enter your city name', ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata', 'Pune', 'Ahmedabad', 'Jaipur', 'Surat', 'Lucknow', 'Kanpur', 'Nagpur', 'Visakhapatnam', 'Indore', 'Thane', 'Bhopal', 'Patna', 'Vadodara', 'Ghaziabad','Kottayam'])
 # User input fields for custom date and time
 custom_date = st.date_input('Select a date')
 custom_time = st.time_input('Select a time')
