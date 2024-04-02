@@ -6,7 +6,7 @@ import requests
 import datetime
 
 # Load your machine learning model
-model = joblib.load(r'C:\Users\lenovo\OneDrive\Documents\SmashCast\my_model_file.pkl')
+model = joblib.load('my_model_file.pkl')
 
 # Function to make predictions
 def predict(a):
