@@ -6,4 +6,3 @@ jobs:
         env:
           MY_API: ${{ secrets.MY_API }}
         run: |
-          # Your commands here
