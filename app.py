@@ -3,7 +3,6 @@ import joblib
 import numpy as np
 import pandas as pd
 import requests
-from streamlit_extras.let_it_rain import rain
 import datetime
 
 # Load your machine learning model
