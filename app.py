@@ -7,7 +7,7 @@ from streamlit_extras.let_it_rain import rain
 import datetime
 
 # Load your machine learning model
-model = joblib.load(r'C:\Users\lenovo\OneDrive\Documents\my_model\my_model_file.pkl')
+model = joblib.load(r'C:\Users\lenovo\OneDrive\Documents\SmashCast\my_model_file.pkl')
 
 # Function to make predictions
 def predict(a):
@@ -79,7 +79,7 @@ def get_weather_data(city):
 # Streamlit app layout
 st.title('Weather-Driven Badminton Play Predictor')
 
-st.image('C:/Users/lenovo/OneDrive/Documents/my_model/badmin_img.png')
+st.image('C:/Users/lenovo/OneDrive/Documents/SmashCast/badmin_img.png')
 
 # User input fields for custom prediction
 temperature_custom = st.slider('Temperature (°C)', min_value=-20.0, max_value=40.0, value=20.0, step=1.0)
@@ -124,4 +124,4 @@ if st.button('Real-time Prediction'):
         if prediction[0] == 1:
             st.balloons()
 
-st.image('C:/Users/lenovo/OneDrive/Documents/my_model/badgy.png')
+st.image('C:/Users/lenovo/OneDrive/Documents/SmashCast/badgy.png')
