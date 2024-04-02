@@ -1,6 +1,9 @@
 ## Sample
 
-![image](https://github.com/Adityak8340/SmashCast/assets/140245948/29d27030-4706-494b-b479-810048947591)
+https://github.com/Adityak8340/SmashCast/assets/140245948/2ddbcdde-d2e0-482f-b63e-18a3ed5187bd
+
+ample
+
 
 # SmashCast - Weather-Driven Badminton Play Predictor
 
