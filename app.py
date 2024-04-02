@@ -62,7 +62,7 @@ def classify_weather(description, temperature, humidity, wind_speed):
 # Function to get real-time weather data from OpenWeatherMap API
 def get_weather_data(city):
     country_code = 'IN'
-    api_key = 'd716bfaeab81c239cd61fde05ec817cf'  # Replace with your actual API key from OpenWeatherMap
+    api_key = 'd716bfaeab81c239cd61fde05ec817cf'  # Replace with your API key from OpenWeatherMap
     url = f'http://api.openweathermap.org/data/2.5/weather?q={city},{country_code}&appid={api_key}'
     response = requests.get(url)
     if response.status_code == 200:
