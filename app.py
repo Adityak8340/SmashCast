@@ -79,7 +79,7 @@ def get_weather_data(city):
 st.title('SmashCast')
 st.text('Weather-Driven Badminton Play Predictor')
 
-st.image('badmin_img.png')
+st.image('badmin_img.png', width=200)
 
 # Text input for location for real-time prediction
 location = st.selectbox('Enter your city name', ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata', 'Pune', 'Ahmedabad', 'Jaipur', 'Surat', 'Lucknow', 'Kanpur', 'Nagpur', 'Visakhapatnam', 'Indore', 'Thane', 'Bhopal', 'Patna', 'Vadodara', 'Ghaziabad','Kottayam'])
