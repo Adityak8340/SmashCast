@@ -32,7 +32,6 @@ To run the application locally, follow these steps:
 
 Upon launching the app, users are presented with options to get predictions: custom prediction or real-time prediction based on their current location.
 
-- For custom prediction, users can adjust the sliders for temperature, humidity, and wind speed, and select the weather description.
 - For real-time prediction, users can click the "Get Current Location" button to retrieve their location and obtain predictions based on the current weather conditions.
 - After making a prediction, the app displays the weather information and the prediction result.
 
@@ -49,9 +48,6 @@ Upon launching the app, users are presented with options to get predictions: cus
 
 Contributions are welcome! Please fork the repository, create a new branch, make your changes, and submit a pull request.
 
-## License
-
-This project is licensed under the NAIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
