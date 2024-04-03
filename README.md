@@ -26,13 +26,13 @@ To run the application locally, follow these steps:
 
 2. Install the dependencies:
 
-   '''bash
+   ```bash
    pip install -r requirements.txt
 
 3. Obtain an API key from [OpenWeatherMap](https://openweathermap.org/api) and replace `'YOUR_API_KEY'` in the code with your actual API key.
 
 4. Run the Streamlit app:
-   '''bash
+   ```bash
    streamlit run app.py
 
 ## Usage
