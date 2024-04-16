@@ -55,7 +55,7 @@ def classify_weather(description, temperature, humidity, wind_speed):
         weather_classification['Humidity_Normal'] = [1]
     
     # Classify based on wind speed
-    if wind_speed > 3:
+    if wind_speed > 2.5:
         weather_classification['Wind_Strong'] = [1]
     else:
         weather_classification['Wind_Weak'] = [1]
