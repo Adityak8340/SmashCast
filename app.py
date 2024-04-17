@@ -144,4 +144,4 @@ if st.button('Make Prediction'):
                 st.balloons()
         else:
             st.error("No forecast data found for the selected datetime.")
-
+st.image('badgy.png')
