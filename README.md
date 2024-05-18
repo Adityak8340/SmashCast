@@ -1,8 +1,8 @@
 ## Sample
 
-https://github.com/Adityak8340/SmashCast/assets/140245948/2ddbcdde-d2e0-482f-b63e-18a3ed5187bd
 
-ample
+[streamlit-app-2024-05-18-17-05-64.webm](https://github.com/Adityak8340/SmashCast/assets/140245948/37a087a7-0258-4eb7-b103-5f7fdbb73d06)
+
 
 
 # SmashCast - Weather-Driven Badminton Play Predictor
