@@ -3,10 +3,10 @@ import joblib
 import numpy as np
 import pandas as pd
 import requests
-import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
-from datetime import datetime
+import pytz
 
 load_dotenv()
 # Load your machine learning model
@@ -78,13 +78,6 @@ def get_weather_forecast(city):
             humidity = forecast.get('main', {}).get('humidity', 'N/A')
             wind_speed = forecast.get('wind', {}).get('speed', 'N/A')
             
-            # Debugging print statements
-            print("Forecast Date:", forecast_date)
-            print("Weather Description:", weather_description)
-            print("Temperature:", temperature)
-            print("Humidity:", humidity)
-            print("Wind Speed:", wind_speed)
-            
             forecasts.append((forecast_date, weather_description, temperature, humidity, wind_speed))
         return forecasts
     else:
@@ -103,6 +96,15 @@ def find_suitable_time_slots(forecasts):
             suitable_time_slots.append((forecast_datetime_str, weather_description, temp, hum, wind_spd))
     return suitable_time_slots
 
+# Function to get current time in a specific time zone
+def get_current_time(timezone='Asia/Kolkata'):  # Default to Indian Standard Time
+    tz = pytz.timezone(timezone)
+    current_time = datetime.now(tz)
+    return current_time
+
+# Get the current time
+current_time = get_current_time()
+
 # Streamlit app layout
 st.title('SmashCast')
 st.text('Your Weather-Driven Badminton Outside Play Predictor')
@@ -113,7 +115,22 @@ st.image('badmin_img.png', width=200)
 location = st.selectbox('Enter your city name', ['Lucknow', 'Mumbai', 'Agra', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata', 'Pune', 'Ahmedabad', 'Jaipur', 'Surat', 'Kanpur', 'Nagpur', 'Visakhapatnam', 'Indore', 'Thane', 'Bhopal', 'Patna', 'Vadodara', 'Ghaziabad','Kottayam'])
 # User input fields for custom date and time
 custom_date = st.date_input('Select a date')
-custom_time = st.time_input('Select a time')
+custom_time = st.time_input('Select a time', value=current_time)
+
+# Function to display suitable time slots
+def display_time_slots(time_slots):
+    for slot in time_slots:
+        slot_datetime, slot_description, slot_temp, slot_hum, slot_wind = slot
+        slot_info = f"""
+            <div style="border: 2px solid #4CAF50; padding: 5px; margin: 2px; border-radius: 5px; background-color: #000000; display: inline-block; width: 250px;">
+                <h4>{slot_datetime}</h4>
+                <p>Weather: {slot_description}</p>
+                <p>Temperature: {slot_temp} K</p>
+                <p>Humidity: {slot_hum}%</p>
+                <p>Wind Speed: {slot_wind} m/s</p>
+            </div>
+        """
+        st.markdown(slot_info, unsafe_allow_html=True)
 
 # Button for real-time prediction
 if st.button('Make Prediction'):
@@ -152,8 +169,45 @@ if st.button('Make Prediction'):
         else:
             st.error("No forecast data found for the selected datetime.")
 
+# Button to get suitable time slots for today
+if st.button('Today time-slots'):
+    # Get forecasted weather data
+    forecasts = get_weather_forecast(location)
+    if forecasts is not None:
+        today = datetime.today().date()
+        today_forecasts = [f for f in forecasts if datetime.strptime(f[0], '%Y-%m-%d %H:%M:%S').date() == today]
+        if today_forecasts:
+            # Find and display suitable time slots for playing badminton
+            suitable_time_slots = find_suitable_time_slots(today_forecasts)
+            if suitable_time_slots:
+                st.write("Suitable time slots for playing badminton today:")
+                display_time_slots(suitable_time_slots)
+            else:
+                st.write("No suitable time slots found for playing badminton today.")
+        else:
+            st.write("No forecast data found for today.")
+
+# Button to get suitable time slots for tomorrow
+if st.button('Tomorrow time-slots'):
+    # Get forecasted weather data
+    forecasts = get_weather_forecast(location)
+    if forecasts is not None:
+        tomorrow = (datetime.today() + timedelta(days=1)).date()
+        tomorrow_forecasts = [f for f in forecasts if datetime.strptime(f[0], '%Y-%m-%d %H:%M:%S').date() == tomorrow]
+        if tomorrow_forecasts:
+            # Find and display suitable time slots for playing badminton
+            suitable_time_slots = find_suitable_time_slots(tomorrow_forecasts)
+            if suitable_time_slots:
+                st.write("Suitable time slots for playing badminton tomorrow:")
+                display_time_slots(suitable_time_slots)
+            else:
+                st.write("No suitable time slots found for playing badminton tomorrow.")
+        else:
+            st.write("No forecast data found for tomorrow.")
+
+
 # Button to get suitable time slots
-if st.button('Get Time Slots'):
+if st.button('All time-slots'):
     # Get forecasted weather data
     forecasts = get_weather_forecast(location)
     if forecasts is not None:
@@ -161,19 +215,10 @@ if st.button('Get Time Slots'):
         suitable_time_slots = find_suitable_time_slots(forecasts)
         if suitable_time_slots:
             st.write("Suitable time slots for playing badminton:")
-            for slot in suitable_time_slots:
-                slot_datetime, slot_description, slot_temp, slot_hum, slot_wind = slot
-                slot_info = f"""
-                    <div style="border: 2px solid #4CAF50; padding: 10px; margin: 10px; border-radius: 5px;">
-                        <h4>{slot_datetime}</h4>
-                        <p>Weather: {slot_description}</p>
-                        <p>Temperature: {slot_temp} K</p>
-                        <p>Humidity: {slot_hum}%</p>
-                        <p>Wind Speed: {slot_wind} m/s</p>
-                    </div>
-                """
-                st.markdown(slot_info, unsafe_allow_html=True)
+            display_time_slots(suitable_time_slots)
         else:
             st.write("No suitable time slots found for playing badminton.")
+
+
 
 st.image('badgy.png')
