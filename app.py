@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 import os
 from datetime import datetime
 
-
 load_dotenv()
 # Load your machine learning model
 model = joblib.load('my_model_file.pkl')
@@ -92,7 +91,17 @@ def get_weather_forecast(city):
         st.error("Failed to fetch weather forecast. Please check your API key and try again.")
         return None
 
-
+# Function to find suitable time slots for playing badminton
+def find_suitable_time_slots(forecasts):
+    suitable_time_slots = []
+    for forecast in forecasts:
+        forecast_datetime_str, weather_description, temp, hum, wind_spd = forecast
+        classification_result = classify_weather(weather_description, temp, hum, wind_spd)
+        current_weather = pd.DataFrame(classification_result)
+        prediction = predict(current_weather)
+        if prediction[0] == 1:
+            suitable_time_slots.append((forecast_datetime_str, weather_description, temp, hum, wind_spd))
+    return suitable_time_slots
 
 # Streamlit app layout
 st.title('SmashCast')
@@ -105,8 +114,6 @@ location = st.selectbox('Enter your city name', ['Lucknow', 'Mumbai', 'Agra', 'D
 # User input fields for custom date and time
 custom_date = st.date_input('Select a date')
 custom_time = st.time_input('Select a time')
-
-
 
 # Button for real-time prediction
 if st.button('Make Prediction'):
@@ -144,4 +151,29 @@ if st.button('Make Prediction'):
                 st.balloons()
         else:
             st.error("No forecast data found for the selected datetime.")
+
+# Button to get suitable time slots
+if st.button('Get Time Slots'):
+    # Get forecasted weather data
+    forecasts = get_weather_forecast(location)
+    if forecasts is not None:
+        # Find and display suitable time slots for playing badminton
+        suitable_time_slots = find_suitable_time_slots(forecasts)
+        if suitable_time_slots:
+            st.write("Suitable time slots for playing badminton:")
+            for slot in suitable_time_slots:
+                slot_datetime, slot_description, slot_temp, slot_hum, slot_wind = slot
+                slot_info = f"""
+                    <div style="border: 2px solid #4CAF50; padding: 10px; margin: 10px; border-radius: 5px;">
+                        <h4>{slot_datetime}</h4>
+                        <p>Weather: {slot_description}</p>
+                        <p>Temperature: {slot_temp} K</p>
+                        <p>Humidity: {slot_hum}%</p>
+                        <p>Wind Speed: {slot_wind} m/s</p>
+                    </div>
+                """
+                st.markdown(slot_info, unsafe_allow_html=True)
+        else:
+            st.write("No suitable time slots found for playing badminton.")
+
 st.image('badgy.png')
