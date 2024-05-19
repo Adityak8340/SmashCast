@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
 import pytz
+import re
 
 load_dotenv()
 # Load your machine learning model
@@ -113,7 +114,6 @@ st.markdown("---")
 
 # Center-aligned text
 st.markdown("<h4 style='text-align: center;'>Your Weather-Driven Badminton Outside Play Predictor</h4>", unsafe_allow_html=True)
-
 
 # Create columns with different widths
 col1, col2 = st.columns([1, 1])  # Adjust the list to control column sizes
@@ -234,6 +234,65 @@ with col4:
                 display_time_slots(suitable_time_slots)
             else:
                 st.write("No suitable time slots found for playing badminton.")
+
+# Chatbot Interface
+st.sidebar.title("Chat with SmashBot")
+st.sidebar.markdown("Ask SmashBot about the weather and badminton playability.")
+
+# Function to handle chatbot responses
+def handle_chatbot_query(user_input):
+    response = ""
+    
+    # Regex to extract city, date, and time from the user input
+    match = re.search(r'play badminton in ([a-zA-Z\s]+) on (\d{4}-\d{2}-\d{2}) at (\d{2}:\d{2})', user_input)
+    
+    if match:
+        city = match.group(1).strip()
+        date_str = match.group(2)
+        time_str = match.group(3)
+        
+        try:
+            custom_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+            custom_time = datetime.strptime(time_str, "%H:%M").time()
+            
+            forecasts = get_weather_forecast(city)
+            if forecasts:
+                selected_datetime = datetime.combine(custom_date, custom_time)
+                closest_forecast = None
+                min_time_difference = float('inf')
+                
+                for forecast in forecasts:
+                    forecast_datetime_str, _, _, _, _ = forecast
+                    forecast_datetime = datetime.strptime(forecast_datetime_str, '%Y-%m-%d %H:%M:%S')
+                    time_difference = abs((forecast_datetime - selected_datetime).total_seconds())
+                    if time_difference < min_time_difference:
+                        closest_forecast = forecast
+                        min_time_difference = time_difference
+                
+                if closest_forecast:
+                    forecast_datetime, weather_description, temp, hum, wind_spd = closest_forecast
+                    classification_result = classify_weather(weather_description, temp, hum, wind_spd)
+                    current_weather = pd.DataFrame(classification_result)
+                    prediction = predict(current_weather)
+                    response = (f"The forecast for {city} on {custom_date} at {custom_time} is {weather_description} with a temperature of {temp} K, "
+                                f"humidity of {hum}%, and wind speed of {wind_spd} m/s. You {'can' if prediction[0] == 1 else 'cannot'} play badminton.")
+                else:
+                    response = "No forecast data found for the selected datetime."
+            else:
+                response = "Failed to fetch weather data."
+        except ValueError:
+            response = "Invalid date or time format. Please use YYYY-MM-DD for date and HH:MM for time."
+    else:
+        response = "I can only help with queries about playing badminton based on weather conditions."
+    
+    return response
+
+# Chatbot input and response
+user_query = st.sidebar.text_input("Ask SmashBot", "")
+if user_query:
+    bot_response = handle_chatbot_query(user_query)
+    st.sidebar.write(bot_response)
+
 # Display "About the Author" section
 st.sidebar.title("About the Author")
 st.sidebar.markdown("""
