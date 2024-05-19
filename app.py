@@ -106,16 +106,29 @@ def get_current_time(timezone='Asia/Kolkata'):  # Default to Indian Standard Tim
 current_time = get_current_time()
 
 # Streamlit app layout
-st.title('SmashCast')
-st.text('Your Weather-Driven Badminton Outside Play Predictor')
+st.set_page_config(page_title='SmashCast🏸', layout='wide')
+# Title and separator
+st.markdown("<h1 style='text-align: center;'>SmashCast🏸</h1>", unsafe_allow_html=True)
+st.markdown("---")
 
-st.image('badmin_img.png', width=200)
+# Center-aligned text
+st.markdown("<h4 style='text-align: center;'>Your Weather-Driven Badminton Outside Play Predictor</h4>", unsafe_allow_html=True)
 
-# Text input for location for real-time prediction
-location = st.selectbox('Enter your city name', ['Lucknow', 'Mumbai', 'Agra', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata', 'Pune', 'Ahmedabad', 'Jaipur', 'Surat', 'Kanpur', 'Nagpur', 'Visakhapatnam', 'Indore', 'Thane', 'Bhopal', 'Patna', 'Vadodara', 'Ghaziabad','Kottayam'])
-# User input fields for custom date and time
-custom_date = st.date_input('Select a date')
-custom_time = st.time_input('Select a time', value=current_time)
+
+# Create columns with different widths
+col1, col2 = st.columns([1, 1])  # Adjust the list to control column sizes
+
+with col1:
+    location = st.selectbox('Enter your city name', [
+        'Lucknow', 'Mumbai', 'Agra', 'Delhi', 'Bangalore', 'Hyderabad', 
+        'Chennai', 'Kolkata', 'Pune', 'Ahmedabad', 'Jaipur', 'Surat', 
+        'Kanpur', 'Nagpur', 'Visakhapatnam', 'Indore', 'Thane', 'Bhopal', 
+        'Patna', 'Vadodara', 'Ghaziabad', 'Kottayam'
+    ])
+
+with col2:
+    custom_date = st.date_input('Select a date')
+    custom_time = st.time_input('Select a time', value=current_time)
 
 # Function to display suitable time slots
 def display_time_slots(time_slots):
@@ -133,92 +146,94 @@ def display_time_slots(time_slots):
         st.markdown(slot_info, unsafe_allow_html=True)
 
 # Button for real-time prediction
-if st.button('Make Prediction'):
-    # Get forecasted weather data
-    forecasts = get_weather_forecast(location)
-    if forecasts is not None:
-        selected_datetime = datetime.combine(custom_date, custom_time)
-        closest_forecast = None
-        min_time_difference = float('inf')
-        
-        # Find the closest forecasted datetime to the selected datetime
-        for forecast in forecasts:
-            forecast_datetime_str, _, _, _, _ = forecast
-            forecast_datetime = datetime.strptime(forecast_datetime_str, '%Y-%m-%d %H:%M:%S')
-            time_difference = abs((forecast_datetime - selected_datetime).total_seconds())
-            if time_difference < min_time_difference:
-                closest_forecast = forecast
-                min_time_difference = time_difference
-        
-        if closest_forecast is not None:
-            forecast_datetime, weather_description, temp, hum, wind_spd = closest_forecast
-            st.write(f"Forecast Weather: {weather_description}")
-            st.write(f"Temperature: {temp} K")
-            st.write(f"Humidity: {hum}%")
-            st.write(f"Wind Speed: {wind_spd} m/s")
+# Create columns for the buttons
+col1, col2, col3, col4 = st.columns(4)
 
-            # Classify weather parameters for real-time prediction
-            classification_result = classify_weather(weather_description, temp, hum, wind_spd)
-            current_weather = pd.DataFrame(classification_result)
+with col1:
+    if st.button('Make Prediction'):
+        # Get forecasted weather data
+        forecasts = get_weather_forecast(location)
+        if forecasts is not None:
+            selected_datetime = datetime.combine(custom_date, custom_time)
+            closest_forecast = None
+            min_time_difference = float('inf')
+            
+            # Find the closest forecasted datetime to the selected datetime
+            for forecast in forecasts:
+                forecast_datetime_str, _, _, _, _ = forecast
+                forecast_datetime = datetime.strptime(forecast_datetime_str, '%Y-%m-%d %H:%M:%S')
+                time_difference = abs((forecast_datetime - selected_datetime).total_seconds())
+                if time_difference < min_time_difference:
+                    closest_forecast = forecast
+                    min_time_difference = time_difference
+            
+            if closest_forecast is not None:
+                forecast_datetime, weather_description, temp, hum, wind_spd = closest_forecast
+                st.write(f"Forecast Weather: {weather_description}")
+                st.write(f"Temperature: {temp} K")
+                st.write(f"Humidity: {hum}%")
+                st.write(f"Wind Speed: {wind_spd} m/s")
 
-            # Make prediction based on custom weather parameters
-            prediction = predict(current_weather)
-            st.write(f'Real-Time Prediction: {"Yes, you can play Badminton." if prediction[0] == 1 else "No, you cannot play Badminton."}')
-            if prediction[0] == 1:
-                st.balloons()
-        else:
-            st.error("No forecast data found for the selected datetime.")
+                # Classify weather parameters for real-time prediction
+                classification_result = classify_weather(weather_description, temp, hum, wind_spd)
+                current_weather = pd.DataFrame(classification_result)
 
-# Button to get suitable time slots for today
-if st.button('Today time-slots'):
-    # Get forecasted weather data
-    forecasts = get_weather_forecast(location)
-    if forecasts is not None:
-        today = datetime.today().date()
-        today_forecasts = [f for f in forecasts if datetime.strptime(f[0], '%Y-%m-%d %H:%M:%S').date() == today]
-        if today_forecasts:
+                # Make prediction based on custom weather parameters
+                prediction = predict(current_weather)
+                st.write(f'Real-Time Prediction: {"Yes, you can play Badminton." if prediction[0] == 1 else "No, you cannot play Badminton."}')
+                if prediction[0] == 1:
+                    st.balloons()
+            else:
+                st.error("No forecast data found for the selected datetime.")
+
+with col2:
+    if st.button('Today time-slots'):
+        # Get forecasted weather data
+        forecasts = get_weather_forecast(location)
+        if forecasts is not None:
+            today = datetime.today().date()
+            today_forecasts = [f for f in forecasts if datetime.strptime(f[0], '%Y-%m-%d %H:%M:%S').date() == today]
+            if today_forecasts:
+                # Find and display suitable time slots for playing badminton
+                suitable_time_slots = find_suitable_time_slots(today_forecasts)
+                if suitable_time_slots:
+                    st.write("Suitable time slots for playing badminton today:")
+                    display_time_slots(suitable_time_slots)
+                else:
+                    st.write("No suitable time slots found for playing badminton today.")
+            else:
+                st.write("No forecast data found for today.")
+
+with col3:
+    if st.button('Tomorrow time-slots'):
+        # Get forecasted weather data
+        forecasts = get_weather_forecast(location)
+        if forecasts is not None:
+            tomorrow = (datetime.today() + timedelta(days=1)).date()
+            tomorrow_forecasts = [f for f in forecasts if datetime.strptime(f[0], '%Y-%m-%d %H:%M:%S').date() == tomorrow]
+            if tomorrow_forecasts:
+                # Find and display suitable time slots for playing badminton
+                suitable_time_slots = find_suitable_time_slots(tomorrow_forecasts)
+                if suitable_time_slots:
+                    st.write("Suitable time slots for playing badminton tomorrow:")
+                    display_time_slots(suitable_time_slots)
+                else:
+                    st.write("No suitable time slots found for playing badminton tomorrow.")
+            else:
+                st.write("No forecast data found for tomorrow.")
+
+with col4:
+    if st.button('All time-slots'):
+        # Get forecasted weather data
+        forecasts = get_weather_forecast(location)
+        if forecasts is not None:
             # Find and display suitable time slots for playing badminton
-            suitable_time_slots = find_suitable_time_slots(today_forecasts)
+            suitable_time_slots = find_suitable_time_slots(forecasts)
             if suitable_time_slots:
-                st.write("Suitable time slots for playing badminton today:")
+                st.write("Suitable time slots for playing badminton:")
                 display_time_slots(suitable_time_slots)
             else:
-                st.write("No suitable time slots found for playing badminton today.")
-        else:
-            st.write("No forecast data found for today.")
-
-# Button to get suitable time slots for tomorrow
-if st.button('Tomorrow time-slots'):
-    # Get forecasted weather data
-    forecasts = get_weather_forecast(location)
-    if forecasts is not None:
-        tomorrow = (datetime.today() + timedelta(days=1)).date()
-        tomorrow_forecasts = [f for f in forecasts if datetime.strptime(f[0], '%Y-%m-%d %H:%M:%S').date() == tomorrow]
-        if tomorrow_forecasts:
-            # Find and display suitable time slots for playing badminton
-            suitable_time_slots = find_suitable_time_slots(tomorrow_forecasts)
-            if suitable_time_slots:
-                st.write("Suitable time slots for playing badminton tomorrow:")
-                display_time_slots(suitable_time_slots)
-            else:
-                st.write("No suitable time slots found for playing badminton tomorrow.")
-        else:
-            st.write("No forecast data found for tomorrow.")
-
-
-# Button to get suitable time slots
-if st.button('All time-slots'):
-    # Get forecasted weather data
-    forecasts = get_weather_forecast(location)
-    if forecasts is not None:
-        # Find and display suitable time slots for playing badminton
-        suitable_time_slots = find_suitable_time_slots(forecasts)
-        if suitable_time_slots:
-            st.write("Suitable time slots for playing badminton:")
-            display_time_slots(suitable_time_slots)
-        else:
-            st.write("No suitable time slots found for playing badminton.")
-
+                st.write("No suitable time slots found for playing badminton.")
 # Display "About the Author" section
 st.sidebar.title("About the Author")
 st.sidebar.markdown("""
@@ -240,5 +255,4 @@ def display_connect_with_me():
 
 # Display "Connect with Me" section
 display_connect_with_me()
-
-st.image('badgy.png')
+st.image('badmin.jpg', width=1000)
