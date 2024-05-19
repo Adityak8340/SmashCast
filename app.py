@@ -223,7 +223,7 @@ with col3:
                 st.write("No forecast data found for tomorrow.")
 
 with col4:
-    if st.button('All time-slots'):
+    if st.button('This week time-slots'):
         # Get forecasted weather data
         forecasts = get_weather_forecast(location)
         if forecasts is not None:
